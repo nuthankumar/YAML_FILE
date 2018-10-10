@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: bttp
+spec:
+  containers:
+  - name: btp-container
+    image: docker.io/8884654123/bttp
+  imagePullSecrets:
+  - name: regcred
