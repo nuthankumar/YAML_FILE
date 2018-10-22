@@ -1,0 +1,19 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  labels:
+    app: producer
+  name: producer
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: producer
+    spec:
+      containers:
+      - image: docker.io/8884654123/producerk8s:latest
+        imagePullPolicy: IfNotPresent
+        name: producer
+        ports:
+        - containerPort: 8080

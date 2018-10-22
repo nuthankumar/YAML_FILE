@@ -15,7 +15,8 @@ minikube addons enable dashboard
 kubectl create -f https://raw.githubusercontent.com/nuthankumar/YAML_FILE/master/mysql-pv.yaml
 kubectl create -f https://raw.githubusercontent.com/nuthankumar/YAML_FILE/master/mysql-deployment.yaml
 kubectl run -it --rm --image=mysql:5.7 --restart=Never mysql-client -- mysql -h mysql -ppassword
-
+create database btp;
+use btp;
 
 
 CREATE TABLE `role` (

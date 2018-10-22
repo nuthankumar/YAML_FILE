@@ -31,11 +31,17 @@ sudo /opt/Kafka/kafka_2.11-2.0.0/bin/kafka-topics.sh --list --zookeeper localhos
 sudo /opt/Kafka/kafka_2.11-2.0.0/bin/kafka-console-producer.sh --broker-list localhost:9092 --topic testing
 ====run consumer in console====
 sudo /opt/Kafka/kafka_2.11-2.0.0/bin/kafka-console-consumer.sh --bootstrap-server localhost:9092 --topic testing --from-beginning
-
-
-
+docker pull confluent/kafka
+docker run -d --name zookeeper -p 2181:2181 confluent/zookeeper
+docker run -d --name kafka -p 9092:9092 --link zookeeper:zookeeper confluent/kafka
+docker run -d --name kafka -p 9092:9092 --link zookeeper:zookeeper --env KAFKA_CREATE_TOPICS: “testing:1:2” confluent/kafka
+docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' 2493a2b0b341
 =====If anything is not install right use these ====
 
+base=https://github.com/docker/machine/releases/download/v0.14.0 &&
+  curl -L $base/docker-machine-$(uname -s)-$(uname -m) >/tmp/docker-machine &&
+  sudo install /tmp/docker-machine /usr/local/bin/docker-machine
+docker-machine ip
 sudo apt install gradle
 gradle -v
 chmod +x gradle
@@ -43,3 +49,21 @@ gradle wrapper
 ./gradlew jar -PscalaVersion=2.11.12
 sudo apt-get update
 ./gradlew tasks
+
+
+sudo apt-get purge --auto-remove zookeeperd
+sudo service zookeeper stop
+docker container prune
+docker run -d --name zookeeper -p 2181:2181 jplock/zookeeper
+
+docker run -d --name kafka -p 7203:7203 -p 9092:9092 -p 3030:3030 -e KAFKA_ADVERTISED_HOST_NAME=kafka -e ZOOKEEPER_IP=172.17.0.2 -e ADV_HOST=127.0.0.1 ches/kafka
+
+docker run --rm ches/kafka kafka-topics.sh --create --topic testing --replication-factor 1 --partitions 1 --zookeeper 172.17.0.2:2181 
+
+
+
+docker pull spotify/kafka
+docker run -d -p 9092:9092 --env ADVERTISED_HOST=kafka --env ADVERTISED_PORT=9092 --name kafka spotify/kafka
+docker exec kafka /opt/kafka_2.11-0.10.1.0/bin/kafka-topics.sh --create --zookeeper localhost:2181 --replication-factor 1 --partitions 1 --topic test
+docker exec kafka /opt/kafka_2.11-0.10.1.0/bin/kafka-topics.sh --list --zookeeper localhost:2181
+
