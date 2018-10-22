@@ -69,6 +69,13 @@ chmod +x  /tmp/linux-amd64/helm && sudo mv /tmp/linux-amd64/helm /usr/local/bin/
 # Initialize helm, install Tiller(the helm server side component)
 helm init
 
+
+kubectl create serviceaccount --namespace kube-system tiller
+kubectl create clusterrolebinding tiller-cluster-rule --clusterrole=cluster-admin --serviceaccount=kube-system:tiller
+kubectl patch deploy --namespace kube-system tiller-deploy -p '{"spec":{"template":{"spec":{"serviceAccount":"tiller"}}}}'      
+
+
+
 # Make sure we get the latest list of chart
 helm repo update
 helm ls
