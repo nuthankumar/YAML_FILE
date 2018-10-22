@@ -12,7 +12,7 @@ spec:
         app: producer
     spec:
       containers:
-      - image: docker.io/8884654123/producer_l_gc:latest
+      - image: docker.io/8884654123/p_l_gc1:latest
         imagePullPolicy: IfNotPresent
         name: producer
         ports:
